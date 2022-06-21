@@ -1,0 +1,72 @@
+>X.B
+expressed: Ffar1, Gm10759, Brwd1, Eml4, Gga2
+not expressed: Vps26b, Ppt2
+
+>X.B1a
+expressed: Ilkap, Fam20b, Krt222, Ints4, Nfatc1
+
+>X.BEC
+expressed: Emcn, Egfl7, Scarb1, Pecam1, Mmrn2
+
+>X.DC
+expressed: Gpr120, Spag9, Vrk2, Uvrag, Rogdi
+
+>X.Ep
+expressed: Efna5, Arhgap8, Clip4, Kcnma1, Plxnb1
+
+>X.FRC
+expressed: Shisa3, Lepr, Thbs2, Cpxm1, Cxcl12
+
+>X.GN
+expressed: Spatc1, Gsr, Stfa2l1, Sepx1, Csf3r
+
+>X.ILC1
+expressed: Ciapin1, Mcart6, Cpne7, Tab2, Mta3
+
+>X.ILC3
+expressed: Gdpd5, Mapk10, Tnfsf11, Plekhg1, Large
+
+>X.LEC
+expressed: Gdf10, Arhgap29, Prox1, Fxyd6, Nudt4
+
+>X.MC
+expressed: Maob, Serpinb1a, Rgs18, Adora3, Slc6a4
+
+>X.MEChi
+expressed: Glt28d2, Chmp5, Mdm2, 1810043G02Rik, Liph
+
+>X.MF
+expressed: Gm10134, Gbgt1, Cndp2, Pla2g15, Siglec1
+
+>X.Mo
+expressed: Brpf1, Camkk2, Arhgef37, Zfp710, Mapkapk2
+
+>X.NK
+expressed: Klra1, Klre1, Adamts14, Klri2, Klra3
+
+>X.NKT
+expressed: 6330403K07Rik, Trpm6, Mrps23, Ndfip1, Zap70
+not expressed: Prcp
+
+>X.preB
+expressed: Mrs2, Gm9983, Zkscan17, Nnt, P2rx3
+
+>X.preT
+expressed: Myl10, Rnf4, Trim27, Bat1a, Phgdh
+not expressed: Kif1b, 5330426P16Rik
+
+>X.proB
+expressed: Fbxl19, Brd8, Gm13238, Ccdc135, Il12a
+not expressed: Wsb2, Flt3l, Sirt2
+
+>X.SC
+expressed: E2f6, 1110020G09Rik, Rab38, Fam54a, Cdca7l
+not expressed: Btg2, Tnfaip3, Nedd9
+
+>X.T
+expressed: Trav14d-1, Gm13949, Gm13927, Ubash3a, Cd6
+not expressed: Lyn, Rbpms, Slc35f5
+
+>X.Tgd
+expressed: Prkar1a, Tox, A630038E17Rik, Ikzf2, Pdcd1
+
