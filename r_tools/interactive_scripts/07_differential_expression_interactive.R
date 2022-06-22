@@ -92,7 +92,9 @@ if (opt$split_comparisons != "none"){
   cat("Now working on subsetted Seurat objects")
   values <- unique(seurat@meta.data[[opt$split_comparisons]])
   for (val in values) {
-    tmp_seurat <- subset(seurat, opt$split_comparisons == val)
+    tmp_seurat <- seurat
+    tmp_seurat$tmp_col <- seurat@meta.data[[split_comparisons]]
+    tmp_seurat <- subset(tmp_seurat, tmp_col == val)
     
     run_libra(seurat_obj = tmp_seurat,
               cell_type_col = opt$cell_type_col,
@@ -102,7 +104,6 @@ if (opt$split_comparisons != "none"){
               de_method = opt$de_method,
               de_type = opt$de_type,
               filename = paste0("DE_", val))
-    
   }
 }
 cat('done with differential expression')
