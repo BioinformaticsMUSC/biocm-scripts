@@ -51,11 +51,10 @@ cat('done!\n')
 ##############################
 
 plot_scGate <- function(seurat, scGate_model, save_dir){
-  model_name <- scGate_model$name
   seurat <- scGate(seurat, model=scGate_model, assay = "RNA")
   DimPlot(seurat, cols = c(list(Impure = "gray", Pure = "green"))) + theme(aspect.ratio = 1) + 
     ggtitle(paste0(model_name, " scGate model"))
-  ggsave(filename = paste0(save_dir, '/scGate/', model_name, '_scgate_dimplot.pdf'))
+  ggsave(filename = paste0(save_dir, "/", model_name, '_scgate_dimplot.pdf'))
   
 }
 
@@ -79,12 +78,12 @@ new_models <- list(bcell_model, endothelial_model, fib_model, gran_model, epithe
 #################################
 for (m in names(models[[opt$species]][['generic']])) {
   cat("\nWorking on model: ", m)
-  plot_scGate(seurat, scGate_model = models[[opt$species]][['generic']][[m]], model_name = m, save_dir = save_dir)
+  plot_scGate(seurat, scGate_model = models[[opt$species]][['generic']][[m]], model_name = m, save_dir = scgate_path)
 }
 
 for (model in names(new_models)) {
   cat("\nWorking on model: ", model)
-  plot_scGate(seurat, scGate_model = new_models[[model]], model_name = model, save_dir = save_dir)
+  plot_scGate(seurat, scGate_model = new_models[[model]], model_name = model, save_dir = scgate_path)
 }
 
 saveRDS(seurat, file = paste0(opt$output_path, '/', opt$seurat_save_name))
