@@ -6,10 +6,10 @@
 cat("\nThis script uses scGate to check purity of cell types.\n")
 
 
-opt = list(seurat_file_path='/Users/bryanwgranger/biocm/projects/dubois/seurat_objects/seurat_processed_filt.rds',
-           project_name='dubois',
-           output_path='/Users/bryanwgranger/biocm/projects/dubois/main_analysis/markers',
-           seurat_save_name='seurat_custom_garnett.rds',
+opt = list(seurat_file_path='none',
+           project_name='none',
+           output_path='none',
+           seurat_save_name='05_project_scGate.rds',
            species='mouse'
            )
 

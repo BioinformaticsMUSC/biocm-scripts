@@ -5,10 +5,10 @@
 
 cat("\nThis performs differential expression analysis using Libra.\n")
 
-opt = list(seurat_file_path='/Users/bryanwgranger/biocm/projects/dubois/seurat_objects/07_dubois_de.rds',
-           project_name='dubois',
-           output_path='/Users/bryanwgranger/biocm/projects/dubois/main_analysis/markers',
-           seurat_save_name='07_dubois_de.rds',
+opt = list(seurat_file_path='none',
+           project_name='none',
+           output_path='none',
+           seurat_save_name='07_project_de.rds',
            cell_type_col='Cell',
            replicate_col='tissue',
            label_col='condition',
@@ -107,4 +107,4 @@ if (opt$split_comparisons != "none"){
   }
 }
 cat('done with differential expression')
-saveRDS(seurat, file = paste0(opt$output_path, "/07_dubois_de.rds"))
+saveRDS(seurat, file = paste0(opt$output_path, "/", opt$seurat_save_name))

@@ -6,12 +6,12 @@
 cat("\nThis script predicts cell types using Garnett.\n")
 
 
-opt = list(seurat_file_path='/Users/bryanwgranger/biocm/projects/dubois/seurat_objects/seurat_processed_filt.rds',
-                 project_name='dubois',
-                 output_path='/Users/bryanwgranger/biocm/projects/dubois/main_analysis/markers',
-                 seurat_save_name='seurat_custom_garnett.rds',
+opt = list(seurat_file_path='none',
+                 project_name='none',
+                 output_path='none',
+                 seurat_save_name='04_project_garnett.rds',
                  model_file_path="none",
-                 marker_file_path="/Users/bryanwgranger/biocm/projects/dubois/test_markers.txt",
+                 marker_file_path="none",
                  species='mouse')
 
 print(t(t(unlist(opt))))
