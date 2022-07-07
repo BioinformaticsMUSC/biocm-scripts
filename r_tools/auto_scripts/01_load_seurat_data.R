@@ -12,7 +12,8 @@ option_list = list(
   make_option(c("-g", "--h5_file_path"),     type = "character",   metavar="character",   default='none',  help="Path to the 10X h5 file. Either this or the data directory must be provided."),
   make_option(c("-o", "--output_path"),      type = "character",   metavar="character",   default='none',  help="Output DIRECTORY."),
   make_option(c("-c", "--min_cells"),        type = "integer",   metavar="integer",   default=3,  help="Minimum number of cells to be included in Seurat object (default 3)."),
-  make_option(c("-f", "--min_feats"),        type = "integer",   metavar="integer",   default=200,  help="Minimum number of features to be included in Seurat object (default 200).")
+  make_option(c("-f", "--min_feats"),        type = "integer",   metavar="integer",   default=200,  help="Minimum number of features to be included in Seurat object (default 200)."),
+  make_option(c("-d", "--species"),        type = "character",   metavar="character",   default="none",  help="Species of sample")
 )
 
 opt = parse_args(OptionParser(option_list=option_list))
@@ -42,6 +43,22 @@ if (opt$data_dir == 'none' && opt$h5_file_path == 'none') {
   seurat_data <- Read10X_h5(opt$h5_file_path)
 } else {
   seurat_data <- Read10x(opt$data_dir)
+}
+
+cat("\nFiltering for Protein Coding Genes\n")
+
+if (opt$species == 'human') {
+  load('/Users/bryanwgranger/biocm/biocm-tools/r_tools/protein_coding_genes/HgProteinCodingGenes.rda')
+  cat("Prefiltering genes total: ", nrow(seurat_data))
+  seurat_data <- seurat_data[rownames(seurat_data) %in% HgProteinCodingGenes,]
+  cat("\nPostfiltering genes total: ", nrow(seurat_data), "\n")
+} else if (opt$species == 'mouse') {
+  load('/Users/bryanwgranger/biocm/biocm-tools/r_tools/protein_coding_genes/MgProteinCodingGenes.rda')
+  cat("Prefiltering genes total: ", nrow(seurat_data))
+  seurat_data <- seurat_data[rownames(seurat_data) %in% HgProteinCodingGenes,]
+  cat("\nPostfiltering genes total: ", nrow(seurat_data), "\n")
+} else {
+  cat("\nSpecies not recognized - proceeding with all genes...\n")
 }
 
 cat("Creating Seurat Object ...")
