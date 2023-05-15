@@ -61,21 +61,21 @@ for (i in 1:length(f)){
     if (opt$species == 'human') {
       cat('\nSpecies is human...\n')
       load('/Users/bryanwgranger/biocm/biocm-tools/r_tools/protein_coding_genes/HgProteinCodingGenes.rda')
-      cat("Prefiltering genes total: ", nrow(seurat_data))
-      seurat_data <- seurat_data[rownames(seurat_data) %in% HgProteinCodingGenes,]
-      cat("\nPostfiltering genes total: ", nrow(seurat_data), "\n")
+      cat("Prefiltering genes total: ", nrow(umis))
+      umis <- umis[rownames(umis) %in% HgProteinCodingGenes,]
+      cat("\nPostfiltering genes total: ", nrow(umis), "\n")
     } else if (opt$species == 'mouse') {
       cat('\nSpecies is mouse...\n')
       load('/Users/bryanwgranger/biocm/biocm-tools/r_tools/protein_coding_genes/MgProteinCodingGenes.rda')
-      cat("Prefiltering genes total: ", nrow(seurat_data))
-      seurat_data <- seurat_data[rownames(seurat_data) %in% MgProteinCodingGenes,]
-      cat("\nPostfiltering genes total: ", nrow(seurat_data), "\n")
+      cat("Prefiltering genes total: ", nrow(umis))
+      umis <- umis[rownames(umis) %in% MgProteinCodingGenes,]
+      cat("\nPostfiltering genes total: ", nrow(umis), "\n")
     } else {
       cat("\nSpecies not recognized - proceeding with all genes...\n")
     }
     
     cat("Creating Seurat Object ...")
-    DATA <- CreateSeuratObject(seurat_data, 
+    DATA <- CreateSeuratObject(umis, 
                                project = opt$project_name, 
                                min.cells = opt$min_cells, 
                                min.features = opt$min_feats)
