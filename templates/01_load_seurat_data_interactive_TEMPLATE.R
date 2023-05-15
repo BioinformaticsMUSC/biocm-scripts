@@ -5,18 +5,12 @@
 
 cat("\nThis script loads Seurat Object from 10X data\n")
 
-
-
-print(t(t(unlist(opt))))
-
-opt = list(data_dir = "none",
-           project_name = "none",
-           sample_name = "none",
-           h5_file_path = "none",
-           output_path = "none",
-           min_cells = "none",
-           min_feats = "none",
-           species = "none")
+opt = list(data_dir = "{{data_dir}}",
+           project_name = "{{project_name}}",
+           output_path = "{{output_path}}",
+           min_cells = {{min_cells}},
+           min_feats = {{min_feats}},
+           species = "{{species}}")
 
 print(t(t(unlist(opt))))
 
@@ -33,52 +27,67 @@ suppressMessages(suppressWarnings({
   library(dplyr)
   library(ggplot2)
   library(cowplot)
+  library(stringr)
 }))
 
-####################################
-### LOAD DATA INTO SEURAT OBJECT ###
-####################################
-if (opt$data_dir == 'none' && opt$h5_file_path == 'none') {
-  stop('Data file path not detected.')
-} else if (opt$h5_file_path != "none") {
-  seurat_data <- Read10X_h5(opt$h5_file_path)
-} else {
-  seurat_data <- Read10x(opt$data_dir)
+
+########################################
+### FIND DATA FILES AND SAMPLE NAMES ###
+########################################
+
+f <- list.dirs(path = opt$data_dir)
+
+ignore_dir = c('count', 'input_path', opt$project_name, 'vdj')
+
+for (i in 1:length(f)){
+  if (!(basename(f[i]) %in% ignore_dir)) {
+    sample <- basename(f[i])
+    cat('Working on ', sample)
+    if (any(str_detect(list.files(f[i]), pattern = "cellbender_filtered.h5"))) {
+      cat('\nReading from cellbender h5 file\n')
+      cb_file = list.files(f[i])[str_which(list.files(f[i]), pattern = "cellbender_filtered.h5")]
+      seurat_data <- Read10X_h5(paste0(f[i], "/", cb_file))
+    } else if ("filtered_feature_bc_matrix.h5" %in% list.files(f[i])) {
+      cat('\nReading from 10X file')
+      seurat_data <- Read10X_h5(paste0(f[i], '/filtered_feature_bc_matrix.h5'))
+    }
+    if (typeof(seurat_data) == "list") {
+      umis <- seurat_data[['Gene Expression']]
+    } else{
+      umis <- seurat_data
+    }
+    cat("\nFiltering for Protein Coding Genes\n")
+    
+    if (opt$species == 'human') {
+      cat('\nSpecies is human...\n')
+      load('/Users/bryanwgranger/biocm/biocm-tools/r_tools/protein_coding_genes/HgProteinCodingGenes.rda')
+      cat("Prefiltering genes total: ", nrow(seurat_data))
+      seurat_data <- seurat_data[rownames(seurat_data) %in% HgProteinCodingGenes,]
+      cat("\nPostfiltering genes total: ", nrow(seurat_data), "\n")
+    } else if (opt$species == 'mouse') {
+      cat('\nSpecies is mouse...\n')
+      load('/Users/bryanwgranger/biocm/biocm-tools/r_tools/protein_coding_genes/MgProteinCodingGenes.rda')
+      cat("Prefiltering genes total: ", nrow(seurat_data))
+      seurat_data <- seurat_data[rownames(seurat_data) %in% MgProteinCodingGenes,]
+      cat("\nPostfiltering genes total: ", nrow(seurat_data), "\n")
+    } else {
+      cat("\nSpecies not recognized - proceeding with all genes...\n")
+    }
+    
+    cat("Creating Seurat Object ...")
+    DATA <- CreateSeuratObject(seurat_data, 
+                               project = opt$project_name, 
+                               min.cells = opt$min_cells, 
+                               min.features = opt$min_feats)
+    
+    DATA <- RenameCells(DATA, add.cell.id = sample)
+    DATA$sample <- sample
+    file_save_name <- paste0(opt$project_name, "_", sample)
+    cat("done!\n\n")
+    print(DATA)
+
+    saveRDS(DATA, file=paste0(opt$output_path, '/', file_save_name, '.rds'))
+    cat(paste0('\n\nSeurat Object saved as RDS file to ', paste0(opt$output_path, '/', file_save_name, '.rds')))
+    rm(DATA, seurat_data, umis)
+  }
 }
-
-cat("\nFiltering for Protein Coding Genes\n")
-
-if (opt$species == 'human') {
-  load('/Users/bryanwgranger/biocm/biocm-tools/r_tools/protein_coding_genes/HgProteinCodingGenes.rda')
-  cat("Prefiltering genes total: ", nrow(seurat_data))
-  seurat_data <- seurat_data[rownames(seurat_data) %in% HgProteinCodingGenes,]
-  cat("\nPostfiltering genes total: ", nrow(seurat_data), "\n")
-} else if (opt$species == 'mouse') {
-  load('/Users/bryanwgranger/biocm/biocm-tools/r_tools/protein_coding_genes/MgProteinCodingGenes.rda')
-  cat("Prefiltering genes total: ", nrow(seurat_data))
-  seurat_data <- seurat_data[rownames(seurat_data) %in% HgProteinCodingGenes,]
-  cat("\nPostfiltering genes total: ", nrow(seurat_data), "\n")
-} else {
-  cat("\nSpecies not recognized - proceeding with all genes...\n")
-}
-
-cat("Creating Seurat Object ...")
-DATA <- CreateSeuratObject(seurat_data, 
-                           project = opt$project_name, 
-                           min.cells = opt$min_cells, 
-                           min.features = opt$min_feats)
-cat("done!\n\n")
-print(DATA)
-
-if (opt$sample_name != "none"){
-  DATA@meta.data$sample <- opt$sample_name
-  cat("\n\nCreating sample column in metadata.")
-  file_save_name <- paste0(opt$project_name, "_", opt$sample_name)
-} else {
-  file_save_name <- opt$project_name
-}
-
-cat('\n\nSaving as RDS file ...')
-saveRDS(DATA, file=paste0(opt$output_path, '/', file_save_name, '.rds'))
-cat(paste0('\n\nSeurat Object saved as RDS file to ', paste0(opt$output_path, '/', file_save_name, '.rds')))
-
