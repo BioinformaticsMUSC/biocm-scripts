@@ -38,6 +38,7 @@ suppressMessages(suppressWarnings({
   library(clustree)
   library(scDblFinder)
   library(SingleCellExperiment)
+  library(harmony)
 }))
 
 ####################################

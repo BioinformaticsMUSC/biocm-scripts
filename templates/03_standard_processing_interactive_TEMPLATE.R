@@ -36,6 +36,7 @@ suppressMessages(suppressWarnings({
   library(ggplot2)
   library(cowplot)
   library(clustree)
+  library(harmony)
 }))
 
 
@@ -56,13 +57,18 @@ seurat <- RunPCA(object = seurat,
                             weight.by.var = TRUE, 
                             ndims.print = 1:5, 
                             nfeatures.print = 30, 
-                            npcs = 30, 
+                            npcs = 50, 
                             reduction.name = "pca")
 cat('done!\n')
+
+cat('\nRunning Harmony for batch correction...')
+seurat <- RunHarmony(seurat, 'sample')
+cat('done!\n')
+
 cat('\nFinding Neighbors...')
 seurat <- FindNeighbors(object = seurat, 
-                                   reduction = "pca", 
-                                   dims = 1:30, 
+                                   reduction = "harmony", 
+                                   dims = 1:50, 
                                    nn.eps = 0.5)
 cat('done!\n')
 cat('\nFinding clusters using resolution(s):',opt$umap_resolution)
@@ -86,29 +92,18 @@ Idents(seurat) <- "integrated_snn_res.0.6"
 
 cat('\nRunning UMAP...')
 seurat <- RunUMAP(object = seurat, 
-                             reduction = "pca", 
-                             dims = 1:30)
+                             reduction = "harmony", 
+                             dims = 1:50)
 cat('done!\n')
-
-
-# Select the RNA counts slot to be the default assay
-DefaultAssay(seurat) <- "RNA"
-cat('\nRunning Normalization...')
-seurat <- NormalizeData(object = seurat, 
-                                   normalization.method = "LogNormalize", 
-                                   scale.factor = 10000)
-
-#seurat@meta.data <- seurat@meta.data %>%
-#  rownames_to_column("TMP") %>%
-#  select(TMP,orig.ident,Genotype,percent.mt,nCount_SCT,nFeature_SCT,integrated_snn_res.0.6) %>%
-#  column_to_rownames("TMP")
-
-cat('\n\nsaving seurat object ...\n')
-saveRDS(seurat, file = paste0(opt$seurat_output_path, '/', opt$seurat_save_name))
 
 cat('\n\nCreating Dim Plots ...\n')
 p1 <- DimPlot(object = seurat, reduction = "umap", label = TRUE, pt.size = 0.5) + theme(legend.position="none")
 ggsave(file = paste0(clviz_path, "/08_DIMPLOT_labels.pdf"))
 p2 <- DimPlot(object = seurat, reduction = "umap", label = FALSE, pt.size = 0.5, group.by="sample")
 ggsave(file = paste0(clviz_path, "/09_DIMPLOT_sample.pdf"))
+
+cat('\n\nsaving seurat object ...\n')
+saveRDS(seurat, file = paste0(opt$seurat_output_path, '/', opt$seurat_save_name))
+
+
 cat('\ndone with script 03_standard_processing.R\n\n')

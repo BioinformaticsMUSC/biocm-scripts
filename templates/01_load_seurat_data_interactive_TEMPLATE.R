@@ -35,7 +35,7 @@ suppressMessages(suppressWarnings({
 ### FIND DATA FILES AND SAMPLE NAMES ###
 ########################################
 
-f <- list.dirs(path = opt$data_dir)
+f <- list.dirs(path = opt$data_dir, recursive=F)
 
 ignore_dir = c('count', 'input_path', opt$project_name, 'vdj')
 

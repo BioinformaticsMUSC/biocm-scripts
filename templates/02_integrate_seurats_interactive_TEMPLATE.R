@@ -68,7 +68,7 @@ for (j in 1:(length(seurat_list)-1)){
 cat("done!\n")
 
 #percent.mt
-seurat[['pMito']] <- PercentageFeatureSet(seurat, pattern = "^mt-")
+seurat[['pMito']] <- PercentageFeatureSet(seurat, pattern = "^[Mm][Tt]-")
 
 if(sum(seurat[['pMito']]) == 0) {
   seurat[['pMito']] <- PercentageFeatureSet(seurat, pattern = "^MT-")
@@ -76,10 +76,7 @@ if(sum(seurat[['pMito']]) == 0) {
 
 ##UPDATE METADATA #### UPDATE THIS AS NEEDED
 seurat@meta.data <- seurat@meta.data %>%
-  dplyr::rename(nUMI = nCount_RNA, nGene = nFeature_RNA) %>%
-  mutate(patient = sapply(X = strsplit(sample, split = "_"), FUN = "[", 1)) %>%
-  mutate(tcell_type = sapply(X = strsplit(sample, split = "_"), FUN = "[", 2)) %>%
-  mutate(activation = sapply(X = strsplit(sample, split = "_"), FUN = "[", 3))
+  dplyr::rename(nUMI = nCount_RNA, nGene = nFeature_RNA) 
 
 #save as unfiltered object
 cat("\nSaving combined unfiltered seurat object ...")
