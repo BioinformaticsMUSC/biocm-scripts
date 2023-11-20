@@ -32,6 +32,7 @@ suppressMessages(suppressWarnings({
   library(ggplot2)
   library(cowplot)
   library(presto)
+  library(AUCell)
 }))
 
 ####################################
@@ -53,5 +54,10 @@ top <- top_markers(presto_markers, n = 10)
 
 write.csv(top, file = paste0(opt$output_path, '/top10_presto_markers_clusters.csv'))
 
+seurat@misc[['markers']][['presto']]$all <- presto_markers
+seurat@misc[['markers']][['presto']]$top_20 <- top
 
+seurat@misc[['gene_ranks']][['aucell']]$all <- AUCell_buildRankings(seurat@assays[['SCT']]@counts)
+
+saveRDS(seurat, file=paste0(opt$seurat_output_path, '/03b_presto_markers_clusters_', opt$seurat_save_name))
 
