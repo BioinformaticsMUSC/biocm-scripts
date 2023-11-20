@@ -68,7 +68,8 @@ run_libra <- function(seurat_obj, cell_type_col, replicate_col, label_col,
                        sheetName="Stats",
                        overwrite=T)
   write.table(dge, paste0(opt$output_path, "/", filename, ".txt"),sep="\t",quote=F)
-  
+
+  return(DE_output)
 }
 
 ####################################
@@ -77,7 +78,7 @@ run_libra <- function(seurat_obj, cell_type_col, replicate_col, label_col,
 cat('\nLoading seurat object and preparing for Libra...\n')
 seurat <- readRDS(opt$seurat_file_path)
 
-run_libra(seurat_obj = seurat,
+seurat@misc[['DE_genes']][['libra']]$overall <- run_libra(seurat_obj = seurat,
           cell_type_col = opt$cell_type_col,
           replicate_col = opt$replicate_col,
           label_col = opt$label_col,
@@ -96,7 +97,7 @@ if (opt$split_comparisons != "none"){
     tmp_seurat$tmp_col <- seurat@meta.data[[split_comparisons]]
     tmp_seurat <- subset(tmp_seurat, tmp_col == val)
     
-    run_libra(seurat_obj = tmp_seurat,
+    seurat@misc[['DE_genes']][['libra']][val] <- run_libra(seurat_obj = tmp_seurat,
               cell_type_col = opt$cell_type_col,
               replicate_col = opt$replicate_col,
               label_col = opt$label_col,
